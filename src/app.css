@@ -7,12 +7,32 @@
 }
 
 html {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	font-family: 'Pasti', sans-serif;
 }
 
 body {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
+}
+
+button {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    pointer-events: all;
+}
+
+/* FONTS */
+@font-face {
+	font-family: 'Pasti';
+	src: url('/PASTI-Regular.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
 }
