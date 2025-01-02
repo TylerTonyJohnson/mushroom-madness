@@ -33,15 +33,18 @@ export default class Board {
 			switch (tile.type) {
 				case 'soil':
 					nextTile = new SoilTile(tile.coordinates);
+					nextTile.currentSide = "back";
 					this.tiles.push(nextTile);
 					break;
 				case 'spore':
 					nextTile = new Spore(tile.coordinates, this.teams[teamIndex]);
+					nextTile.currentSide = "front";
 					this.tiles.push(nextTile);
 					teamIndex++;
 					break;
 				case 'pack':
 					nextTile = new PackTile(tile.coordinates);
+					nextTile.currentSide = "back";
 					this.tiles.push(nextTile);
 					break;
 				case 'rhys':
@@ -50,6 +53,7 @@ export default class Board {
 					break;
 				case 'nutrient':
 					nextTile = new NutrientTile(tile.coordinates, 5);
+					nextTile.currentSide = "back";
 					this.tiles.push(nextTile);
 					break;
 				default:

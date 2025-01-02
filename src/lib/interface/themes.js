@@ -4,6 +4,11 @@ export default class ThemeTypes {
 		this.color = type.color;
 	}
 
+	static Space = new ThemeTypes({
+		name: 'space',
+		color: '#888D9E'
+	});
+
 	static Soil = new ThemeTypes({
 		name: 'soil',
 		color: '#A2ACA3'

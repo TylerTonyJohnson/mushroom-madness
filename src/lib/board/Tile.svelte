@@ -1,78 +1,79 @@
 <script>
-	let { tile, zoom, dimensions } = $props();
+	import Hexagon from '$lib/board/Hexagon.svelte';
 
-	const spacing = 80;
-	const size = 70;
+	const spacing = 5;
+	const size = 4.5;
 
-	const xx = 1;
+	let { tile } = $props();
 
-	const xy = Math.cos(Math.PI * (1 / 3));
-	const xz = Math.cos(Math.PI * (2 / 3));
-	const yx = 0;
-	const yy = Math.sin(Math.PI * (1 / 3));
-	const yz = Math.sin(Math.PI * (2 / 3));
+	const color = tile?.theme?.color || 'magenta';
 
-	// Pixel calculations
-	let pixelCoords = $derived({
-		x:
-			spacing *
-				zoom *
-				(tile.coordinates.x * xx + tile.coordinates.y * xy + tile.coordinates.z * xz) +
-			dimensions.x / 2,
-		y:
-			spacing *
-				zoom *
-				(tile.coordinates.x * yx + tile.coordinates.y * yy + tile.coordinates.z * yz) +
-			dimensions.y / 2
-	});
-
-	let pixelSize = $derived({
-		x: (size * zoom) / (Math.sqrt(3) / 2),
-		y: (size * zoom) / (Math.sqrt(3) / 2)
-	});
-
-	let pixelColor = $derived(tile.theme.color);
+	// Event handlers
+	const handleClick = () => {
+		tile.flip();
+	};
 </script>
 
-<svg
+<!-- svelte-ignore a11y_consider_explicit_label -->
+<button
 	class="frame"
-	viewBox="0 0 100 100"
-	fill="none"
-	xmlns="http://www.w3.org/2000/svg"
+	class:revealed={tile.currentSide === 'front'}
+	onclick={handleClick}
 	style={`
-            left: ${pixelCoords.x}px; 
-            bottom: ${pixelCoords.y}px;
-            width: ${pixelSize.x}px;
-            height: ${pixelSize.y}px;
-            fill: ${pixelColor};
-        `}
+		left: ${tile.pixelCoordinates.x * spacing + 50}%; 
+		bottom: ${tile.pixelCoordinates.y * spacing + 50}%;
+		width: ${tile.pixelSize.x * size}%;
+		height: ${tile.pixelSize.y * size}%;
+	`}
 >
-	<path
-		class="hexagon"
-		d="M8.69873 26.1547L50 2.3094L91.3013 26.1547V73.8453L50 97.6906L8.69873 73.8453V26.1547Z"
-	/>
-	<text class="label" x="50" y="50">{tile.label}</text>
-</svg>
+	<div class="contents">
+		<div class="front">
+			<Hexagon {color}>{tile?.label}</Hexagon>
+		</div>
+		<div class="back">
+			<Hexagon {color} />
+		</div>
+	</div>
+</button>
 
 <style>
 	.frame {
 		position: absolute;
 		translate: -50% 50%;
 		pointer-events: all;
+		background-color: transparent;
+		perspective: 200px;
 	}
 
-	.hexagon {
-		transition: fill 0.15s;
+	.contents {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		transform-style: preserve-3d;
+		transition: transform 0.5s;
+	}
 
-		&:hover {
-			fill: pink;
-		}
-		&:active {
-			fill: lightblue;
-		}
-		&:focus {
-			fill: lightgreen;
-		}
+	:not(.revealed) .contents {
+		transform: rotateY(180deg);
+	}
+
+	.front,
+	.back {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		backface-visibility: hidden;
+		border-radius: 50%;
+	}
+
+	.front {
+		/* background-color: white; */
+	}
+
+	.back {
+		/* background-color: black; */
+		transform: rotateY(180deg);
 	}
 
 	.label {
@@ -83,5 +84,6 @@
 		fill: black;
 		font-size: 1.75rem;
 		font-family: Pasti;
+		pointer-events: none;
 	}
 </style>
